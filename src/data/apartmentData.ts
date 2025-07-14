@@ -274,21 +274,14 @@ export const getOutliers = (threshold: number = 200): Apartment[] => {
 
 // Get all apartments in a specific zipcode or nearby zipcodes
 export const getApartmentsByZipcode = (zipcode: string, includeNearby: boolean = true): Apartment[] => {
-  // For now, a simple mapping of nearby zipcodes
-  const nearbyZipcodes: Record<string, string[]> = {
-    '10001': ['10002', '10003'],
-    '10002': ['10001', '10003'],
-    '10003': ['10001', '10002'],
-    '20001': ['20002'],
-    '20002': ['20001'],
-    '30001': ['30002', '30003'],
-    '30002': ['30001', '30003'],
-    '30003': ['30001', '30002']
-  };
+  if (!includeNearby) {
+    // If we don't want to include nearby zipcodes, just return apartments with the exact zipcode
+    return apartments.filter(apt => apt.zipcode === zipcode);
+  }
   
-  const relevantZipcodes = includeNearby 
-    ? [zipcode, ...(nearbyZipcodes[zipcode] || [])]
-    : [zipcode];
-    
-  return apartments.filter(apt => relevantZipcodes.includes(apt.zipcode));
+  // Get the first 3 digits of the zipcode to find similar areas
+  const zipPrefix = zipcode.substring(0, 3);
+  
+  // Find all apartments where the first 3 digits of the zipcode match
+  return apartments.filter(apt => apt.zipcode.substring(0, 3) === zipPrefix);
 };
