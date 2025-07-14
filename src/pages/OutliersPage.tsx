@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../data/AppContext';
-import { getOutliers, zipcodes } from '../data/apartments';
-import type { Apartment } from '../data/apartments';
+import { getOutliers, zipcodes } from '../data/apartmentData';
+import type { Apartment } from '../data/types';
 
 export const OutliersPage = () => {
   const navigate = useNavigate();
@@ -25,6 +25,12 @@ export const OutliersPage = () => {
       currency: 'USD',
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  // Calculate total estimated rent (base + amenities)
+  const calculateTotalEstimatedRent = (apartment: Apartment): number => {
+    const amenitiesValue = apartment.amenities.reduce((sum, amenity) => sum + amenity.valueAdd, 0);
+    return apartment.estimatedBaseRent + amenitiesValue;
   };
 
   // Calculate delta between current and estimated rent
@@ -116,11 +122,11 @@ export const OutliersPage = () => {
                     {formatCurrency(apartment.currentRent)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {formatCurrency(apartment.estimatedRent)}
+                    {formatCurrency(calculateTotalEstimatedRent(apartment))}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={apartment.currentRent > apartment.estimatedRent ? 'text-red-600' : 'text-green-600'}>
-                      {calculateDelta(apartment.currentRent, apartment.estimatedRent)}
+                    <span className={apartment.currentRent > calculateTotalEstimatedRent(apartment) ? 'text-red-600' : 'text-green-600'}>
+                      {calculateDelta(apartment.currentRent, calculateTotalEstimatedRent(apartment))}
                     </span>
                   </td>
                 </tr>

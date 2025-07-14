@@ -97,8 +97,8 @@ export const ResultPage = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {additionalValueAdds.map((item, index) => (
                   <tr key={index}>
-                    <td className="px-6 py-4 whitespace-nowrap">{item.amenityName}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">{formatCurrency(item.valueAdd)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">{formatCurrency(item.avgValueAdd)}</td>
                   </tr>
                 ))}
               </tbody>

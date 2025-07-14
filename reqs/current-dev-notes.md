@@ -9,9 +9,10 @@
 ## Data Structure
 - No backend, using placeholder data in TypeScript files
 - Data files in `src/data/` directory:
-  - `apartments.ts`: Apartment listings data with outlier detection
-  - `amenities.ts`: Building and unit amenities definitions
-  - `valueAdd.ts`: Value-add calculations based on location/zipcode
+  - `types.ts`: Type definitions for the application
+  - `apartmentData.ts`: Apartment listings data with outlier detection and zipcode utilities
+  - `amenityUtils.ts`: Amenity-related data and utilities
+  - `rentCalculator.ts`: Rent calculation functions
   - `AppContext.tsx`: React Context for state management
 
 ## Application Flow
@@ -21,9 +22,11 @@
 
 ## Key Implementation Details
 - Rent estimates calculated based on zipcode, size, bedrooms, bathrooms, and amenities
-- Value-add varies by location (zipcode) for each amenity
+- Each apartment has its own specific value-add for each amenity it has
+- Similar apartments in nearby zipcodes are considered when calculating rent estimates
 - Current rent is color-coded based on comparison to estimated range
 - Outliers can be filtered by zipcode
+- Estimated rent is calculated as base rent + sum of amenity value-adds
 
 ## Future Enhancements
 - Implement actual scatter chart for outliers visualization

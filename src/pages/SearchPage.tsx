@@ -4,12 +4,16 @@ import { FormInput } from '../components/FormInput';
 import { FormDropdown } from '../components/FormDropdown';
 import { AmenityCheckbox } from '../components/AmenityCheckbox';
 import { useAppContext } from '../data/AppContext';
-import { zipcodes } from '../data/apartments';
-import { buildingAmenities, unitAmenities } from '../data/amenities';
+import { zipcodes } from '../data/apartmentData';
+import { getBuildingAmenities, getUnitAmenities } from '../data/amenityUtils';
 
 export const SearchPage = () => {
   const navigate = useNavigate();
   const { searchParams, setSearchParams, calculateEstimate } = useAppContext();
+  
+  // Get amenities
+  const buildingAmenities = getBuildingAmenities().map((name, index) => ({ id: `b${index}`, name }));
+  const unitAmenities = getUnitAmenities().map((name, index) => ({ id: `u${index}`, name }));
   
   // Local state for form values
   const [formValues, setFormValues] = useState({

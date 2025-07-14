@@ -1,9 +1,9 @@
 import { createContext, useState, useContext } from 'react';
 import type { ReactNode } from 'react';
-import { zipcodes } from './apartments';
-import { buildingAmenities, unitAmenities } from './amenities';
-import { calculateRentEstimate, getAdditionalValueAdds } from './valueAdd';
-import type { RentEstimate, ValueAdd } from './valueAdd';
+import { zipcodes } from './apartmentData';
+import { getBuildingAmenities, getUnitAmenities, getAdditionalValueAddAmenities } from './amenityUtils';
+import { calculateRentEstimateRange } from './rentCalculator';
+import type { RentEstimate, AmenityWithAvgValue } from './types';
 
 // Define the search parameters interface
 export interface SearchParams {
@@ -22,7 +22,7 @@ interface AppContextType {
   setSearchParams: (params: SearchParams) => void;
   rentEstimate: RentEstimate | null;
   calculateEstimate: () => void;
-  additionalValueAdds: ValueAdd[];
+  additionalValueAdds: AmenityWithAvgValue[];
   resetSearch: () => void;
   selectedZipcode: string;
   setSelectedZipcode: (zipcode: string) => void;
@@ -61,6 +61,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     unitAmenities: [],
   };
 
+  // Get all available amenities
+  const buildingAmenities = getBuildingAmenities();
+  const unitAmenities = getUnitAmenities();
+
   // State for search parameters
   const [searchParams, setSearchParams] = useState<SearchParams>(defaultSearchParams);
   
@@ -68,14 +72,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [rentEstimate, setRentEstimate] = useState<RentEstimate | null>(null);
   
   // State for additional value adds
-  const [additionalValueAdds, setAdditionalValueAdds] = useState<ValueAdd[]>([]);
+  const [additionalValueAdds, setAdditionalValueAdds] = useState<AmenityWithAvgValue[]>([]);
   
   // State for selected zipcode in outliers view
   const [selectedZipcode, setSelectedZipcode] = useState<string>(zipcodes[0]);
 
   // Function to calculate rent estimate
   const calculateEstimate = () => {
-    const estimate = calculateRentEstimate(
+    const estimate = calculateRentEstimateRange(
       searchParams.zipcode,
       searchParams.sqft,
       searchParams.bedrooms,
@@ -85,7 +89,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setRentEstimate(estimate);
     
     // Calculate additional value adds
-    const valueAdds = getAdditionalValueAdds(
+    const valueAdds = getAdditionalValueAddAmenities(
       searchParams.zipcode,
       [...searchParams.buildingAmenities, ...searchParams.unitAmenities]
     );
