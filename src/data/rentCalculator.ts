@@ -9,7 +9,7 @@ export const calculateEstimatedRent = (
   bedrooms: number,
   bathrooms: number,
   selectedAmenities: string[]
-): number => {
+): number | null => {
   // Get similar apartments in the area
   const similarApartments = getApartmentsByZipcode(zipcode, true).filter(apt => 
     Math.abs(apt.sqft - sqft) <= 200 && // Within 200 sqft
@@ -18,8 +18,8 @@ export const calculateEstimatedRent = (
   );
   
   if (similarApartments.length === 0) {
-    // Fallback calculation if no similar apartments found
-    return 1500 + (sqft * 0.5) + (bedrooms * 300) + (bathrooms * 200);
+    // No similar apartments found
+    return null;
   }
   
   // Calculate average base rent from similar apartments
@@ -56,8 +56,12 @@ export const calculateRentEstimateRange = (
   bedrooms: number,
   bathrooms: number,
   selectedAmenities: string[]
-): RentEstimate => {
+): RentEstimate | null => {
   const estimatedRent = calculateEstimatedRent(zipcode, sqft, bedrooms, bathrooms, selectedAmenities);
+  
+  if (estimatedRent === null) {
+    return null;
+  }
   
   return {
     low: Math.round(estimatedRent * 0.9),

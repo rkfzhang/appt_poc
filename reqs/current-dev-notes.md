@@ -17,16 +17,18 @@
 
 ## Application Flow
 1. Search page (`/`): User inputs apartment parameters and selects amenities
-2. Result page (`/result`): Shows rent estimates and additional value-add amenities
+2. Result page (`/result`): Shows rent estimates and additional value-add amenities that can be toggled on/off
 3. Outliers page (`/outliers`): Displays properties with significant rent differences
 
 ## Key Implementation Details
 - Rent estimates calculated based on zipcode, size, bedrooms, bathrooms, and amenities
 - Each apartment has its own specific value-add for each amenity it has
 - Similar apartments in nearby zipcodes are considered when calculating rent estimates
+- If no similar apartments are found, a "No data found" message is displayed instead of using default values
 - Current rent is color-coded based on comparison to estimated range
 - Outliers can be filtered by zipcode
 - Estimated rent is calculated as base rent + sum of amenity value-adds
+- Interactive amenity selection on the result page allows users to toggle amenities and see immediate rent estimate updates
 
 ## Future Enhancements
 - Implement actual scatter chart for outliers visualization

@@ -23,8 +23,8 @@ function App() {
       
       <footer className="bg-white border-t mt-12 py-6">
         <div className="max-w-6xl mx-auto px-4">
-          <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} Apartment Rent Planner POC
+          <p className="text-center text-gray-400 text-xs mt-2">
+            Disclaimer: All data is fake and for POC (Proof of Concept) purposes only.
           </p>
         </div>
       </footer>

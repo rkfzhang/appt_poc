@@ -26,6 +26,7 @@ interface AppContextType {
   resetSearch: () => void;
   selectedZipcode: string;
   setSelectedZipcode: (zipcode: string) => void;
+  toggleAmenity: (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => void;
 }
 
 // Create the context with default values
@@ -46,6 +47,7 @@ const AppContext = createContext<AppContextType>({
   resetSearch: () => {},
   selectedZipcode: '',
   setSelectedZipcode: () => {},
+  toggleAmenity: () => {},
 });
 
 // Create a provider component
@@ -88,12 +90,16 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     );
     setRentEstimate(estimate);
     
-    // Calculate additional value adds
-    const valueAdds = getAdditionalValueAddAmenities(
-      searchParams.zipcode,
-      [...searchParams.buildingAmenities, ...searchParams.unitAmenities]
-    );
-    setAdditionalValueAdds(valueAdds);
+    // Only calculate additional value adds if we have an estimate
+    if (estimate !== null) {
+      const valueAdds = getAdditionalValueAddAmenities(
+        searchParams.zipcode,
+        [...searchParams.buildingAmenities, ...searchParams.unitAmenities]
+      );
+      setAdditionalValueAdds(valueAdds);
+    } else {
+      setAdditionalValueAdds([]);
+    }
   };
 
   // Function to reset search
@@ -101,6 +107,58 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setSearchParams(defaultSearchParams);
     setRentEstimate(null);
     setAdditionalValueAdds([]);
+  };
+
+  // Function to toggle an amenity (add or remove) and recalculate the estimate
+  const toggleAmenity = (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => {
+    const updatedParams = { ...searchParams };
+    
+    if (type === 'building') {
+      if (isSelected) {
+        // Add amenity if it's not already included
+        if (!updatedParams.buildingAmenities.includes(amenityName)) {
+          updatedParams.buildingAmenities = [...updatedParams.buildingAmenities, amenityName];
+        }
+      } else {
+        // Remove amenity
+        updatedParams.buildingAmenities = updatedParams.buildingAmenities.filter(
+          name => name !== amenityName
+        );
+      }
+    } else {
+      if (isSelected) {
+        // Add amenity if it's not already included
+        if (!updatedParams.unitAmenities.includes(amenityName)) {
+          updatedParams.unitAmenities = [...updatedParams.unitAmenities, amenityName];
+        }
+      } else {
+        // Remove amenity
+        updatedParams.unitAmenities = updatedParams.unitAmenities.filter(
+          name => name !== amenityName
+        );
+      }
+    }
+    
+    setSearchParams(updatedParams);
+    
+    // Recalculate the estimate with the updated amenities
+    const estimate = calculateRentEstimateRange(
+      updatedParams.zipcode,
+      updatedParams.sqft,
+      updatedParams.bedrooms,
+      updatedParams.bathrooms,
+      [...updatedParams.buildingAmenities, ...updatedParams.unitAmenities]
+    );
+    setRentEstimate(estimate);
+    
+    // Update additional value adds
+    if (estimate !== null) {
+      const valueAdds = getAdditionalValueAddAmenities(
+        updatedParams.zipcode,
+        [...updatedParams.buildingAmenities, ...updatedParams.unitAmenities]
+      );
+      setAdditionalValueAdds(valueAdds);
+    }
   };
 
   // Context value
@@ -113,6 +171,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     resetSearch,
     selectedZipcode,
     setSelectedZipcode,
+    toggleAmenity,
   };
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
