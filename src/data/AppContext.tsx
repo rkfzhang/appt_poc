@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { zipcodes } from './apartmentData';
-import { getBuildingAmenities, getUnitAmenities, getAdditionalValueAddAmenities } from './amenityUtils';
+import { getAdditionalValueAddAmenities } from './amenityUtils';
 import { calculateRentEstimateRange } from './rentCalculator';
 import type { RentEstimate, AmenityWithAvgValue } from './types';
 
@@ -64,10 +64,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     buildingAmenities: [],
     unitAmenities: [],
   };
-
-  // Get all available amenities
-  const buildingAmenities = getBuildingAmenities();
-  const unitAmenities = getUnitAmenities();
 
   // State for search parameters
   const [searchParams, setSearchParams] = useState<SearchParams>(defaultSearchParams);
