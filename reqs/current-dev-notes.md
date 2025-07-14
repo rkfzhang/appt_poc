@@ -23,7 +23,8 @@
 ## Key Implementation Details
 - Rent estimates calculated based on zipcode, size, bedrooms, bathrooms, and amenities
 - Each apartment has its own specific value-add for each amenity it has
-- Similar apartments in nearby zipcodes are considered when calculating rent estimates
+- Similar apartments in nearby zipcodes are considered when calculating rent estimates (zipcodes with the same first 3 digits are considered similar)
+- Amenity value calculations also use the same zipcode prefix matching to find relevant properties in the area
 - If no similar apartments are found, a "No data found" message is displayed instead of using default values
 - Current rent is color-coded based on comparison to estimated range
 - Outliers can be filtered by zipcode

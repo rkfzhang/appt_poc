@@ -34,20 +34,21 @@ export const getUnitAmenities = (): string[] => {
   return allAmenities.unit;
 };
 
+// Helper function to get apartments in the same area (matching first 3 digits of zipcode)
+const getApartmentsInSameArea = (zipcode: string): typeof apartments => {
+  // Get the first 3 digits of the zipcode to find similar areas
+  const zipPrefix = zipcode.substring(0, 3);
+  
+  // Find all apartments where the first 3 digits of the zipcode match
+  return apartments.filter(apt => apt.zipcode.substring(0, 3) === zipPrefix);
+};
+
 // Get additional value-add amenities not in the selected list
 export const getAdditionalValueAddAmenities = (
   zipcode: string,
   selectedAmenities: string[]
 ): AmenityWithAvgValue[] => {
-  // For now, a simple mapping of nearby zipcodes
-  const nearbyZipcodes: Record<string, string[]> = {
-    '10001': ['10002', '10003'],
-    '10002': ['10001', '10003'],
-    '10003': ['10001', '10002']
-  };
-  
-  const relevantZipcodes = [zipcode, ...(nearbyZipcodes[zipcode] || [])];
-  const apartmentsInArea = apartments.filter(apt => relevantZipcodes.includes(apt.zipcode));
+  const apartmentsInArea = getApartmentsInSameArea(zipcode);
   const result: AmenityWithAvgValue[] = [];
   
   // Get all amenities in the area that aren't in the selected list
@@ -90,15 +91,7 @@ export const getAdditionalValueAddAmenities = (
 
 // Get all amenities in the area (including those already selected)
 export const getAllAmenitiesInArea = (zipcode: string): AmenityWithAvgValue[] => {
-  // For now, a simple mapping of nearby zipcodes
-  const nearbyZipcodes: Record<string, string[]> = {
-    '10001': ['10002', '10003'],
-    '10002': ['10001', '10003'],
-    '10003': ['10001', '10002']
-  };
-  
-  const relevantZipcodes = [zipcode, ...(nearbyZipcodes[zipcode] || [])];
-  const apartmentsInArea = apartments.filter(apt => relevantZipcodes.includes(apt.zipcode));
+  const apartmentsInArea = getApartmentsInSameArea(zipcode);
   const result: AmenityWithAvgValue[] = [];
   
   // Get all amenities in the area
