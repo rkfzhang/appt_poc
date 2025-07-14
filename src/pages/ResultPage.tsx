@@ -4,7 +4,7 @@ import { AmenityCheckbox } from '../components/AmenityCheckbox';
 
 export const ResultPage = () => {
   const navigate = useNavigate();
-  const { searchParams, rentEstimate, additionalValueAdds, toggleAmenity } = useAppContext();
+  const { searchParams, rentEstimate, additionalValueAdds, toggleAdditionalAmenity, selectedAdditionalAmenities } = useAppContext();
 
   // Check if we have rent estimate data
   if (!rentEstimate) {
@@ -135,10 +135,8 @@ export const ResultPage = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {additionalValueAdds.map((item, index) => {
-                  // Check if this amenity is already selected
-                  const isSelected = item.type === 'building'
-                    ? searchParams.buildingAmenities.includes(item.name)
-                    : searchParams.unitAmenities.includes(item.name);
+                  // Check if this amenity is already selected in the additional amenities
+                  const isSelected = selectedAdditionalAmenities.includes(item.name);
                   
                   return (
                     <tr key={index}>
@@ -156,7 +154,7 @@ export const ResultPage = () => {
                           <AmenityCheckbox
                             label=""
                             checked={isSelected}
-                            onChange={(checked) => toggleAmenity(item.name, item.type, checked)}
+                            onChange={(checked) => toggleAdditionalAmenity(item.name, item.type, checked)}
                           />
                         </div>
                       </td>

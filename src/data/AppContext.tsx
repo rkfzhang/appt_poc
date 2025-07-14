@@ -26,7 +26,8 @@ interface AppContextType {
   resetSearch: () => void;
   selectedZipcode: string;
   setSelectedZipcode: (zipcode: string) => void;
-  toggleAmenity: (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => void;
+  toggleAdditionalAmenity: (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => void;
+  selectedAdditionalAmenities: string[];
 }
 
 // Create the context with default values
@@ -47,7 +48,8 @@ const AppContext = createContext<AppContextType>({
   resetSearch: () => {},
   selectedZipcode: '',
   setSelectedZipcode: () => {},
-  toggleAmenity: () => {},
+  toggleAdditionalAmenity: () => {},
+  selectedAdditionalAmenities: [],
 });
 
 // Create a provider component
@@ -76,17 +78,27 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // State for additional value adds
   const [additionalValueAdds, setAdditionalValueAdds] = useState<AmenityWithAvgValue[]>([]);
   
+  // State for selected additional amenities (separate from search params)
+  const [selectedAdditionalAmenities, setSelectedAdditionalAmenities] = useState<string[]>([]);
+  
   // State for selected zipcode in outliers view
   const [selectedZipcode, setSelectedZipcode] = useState<string>(zipcodes[0]);
 
   // Function to calculate rent estimate
   const calculateEstimate = () => {
+    // Combine search params amenities and selected additional amenities
+    const allSelectedAmenities = [
+      ...searchParams.buildingAmenities, 
+      ...searchParams.unitAmenities,
+      ...selectedAdditionalAmenities
+    ];
+    
     const estimate = calculateRentEstimateRange(
       searchParams.zipcode,
       searchParams.sqft,
       searchParams.bedrooms,
       searchParams.bathrooms,
-      [...searchParams.buildingAmenities, ...searchParams.unitAmenities]
+      allSelectedAmenities
     );
     setRentEstimate(estimate);
     
@@ -96,7 +108,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         searchParams.zipcode,
         [...searchParams.buildingAmenities, ...searchParams.unitAmenities]
       );
-      setAdditionalValueAdds(valueAdds);
+      
+      // Filter out amenities that are already in the search parameters
+      const filteredValueAdds = valueAdds.filter(amenity => 
+        !(searchParams.buildingAmenities.includes(amenity.name) || 
+          searchParams.unitAmenities.includes(amenity.name))
+      );
+      
+      setAdditionalValueAdds(filteredValueAdds);
     } else {
       setAdditionalValueAdds([]);
     }
@@ -107,57 +126,48 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setSearchParams(defaultSearchParams);
     setRentEstimate(null);
     setAdditionalValueAdds([]);
+    setSelectedAdditionalAmenities([]);
   };
 
-  // Function to toggle an amenity (add or remove) and recalculate the estimate
-  const toggleAmenity = (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => {
-    const updatedParams = { ...searchParams };
+  // Function to toggle an additional amenity (add or remove) and recalculate the estimate
+  const toggleAdditionalAmenity = (amenityName: string, type: 'building' | 'unit', isSelected: boolean) => {
+    let updatedAdditionalAmenities = [...selectedAdditionalAmenities];
     
-    if (type === 'building') {
-      if (isSelected) {
-        // Add amenity if it's not already included
-        if (!updatedParams.buildingAmenities.includes(amenityName)) {
-          updatedParams.buildingAmenities = [...updatedParams.buildingAmenities, amenityName];
-        }
-      } else {
-        // Remove amenity
-        updatedParams.buildingAmenities = updatedParams.buildingAmenities.filter(
-          name => name !== amenityName
-        );
+    if (isSelected) {
+      // Add amenity if it's not already included
+      if (!updatedAdditionalAmenities.includes(amenityName)) {
+        updatedAdditionalAmenities = [...updatedAdditionalAmenities, amenityName];
       }
     } else {
-      if (isSelected) {
-        // Add amenity if it's not already included
-        if (!updatedParams.unitAmenities.includes(amenityName)) {
-          updatedParams.unitAmenities = [...updatedParams.unitAmenities, amenityName];
-        }
-      } else {
-        // Remove amenity
-        updatedParams.unitAmenities = updatedParams.unitAmenities.filter(
-          name => name !== amenityName
-        );
-      }
+      // Remove amenity
+      updatedAdditionalAmenities = updatedAdditionalAmenities.filter(name => name !== amenityName);
     }
     
-    setSearchParams(updatedParams);
+    setSelectedAdditionalAmenities(updatedAdditionalAmenities);
+    
+    // Combine search params amenities and selected additional amenities
+    const allSelectedAmenities = [
+      ...searchParams.buildingAmenities, 
+      ...searchParams.unitAmenities,
+      ...updatedAdditionalAmenities
+    ];
     
     // Recalculate the estimate with the updated amenities
     const estimate = calculateRentEstimateRange(
-      updatedParams.zipcode,
-      updatedParams.sqft,
-      updatedParams.bedrooms,
-      updatedParams.bathrooms,
-      [...updatedParams.buildingAmenities, ...updatedParams.unitAmenities]
+      searchParams.zipcode,
+      searchParams.sqft,
+      searchParams.bedrooms,
+      searchParams.bathrooms,
+      allSelectedAmenities
     );
     setRentEstimate(estimate);
     
-    // Update additional value adds
-    if (estimate !== null) {
-      const valueAdds = getAdditionalValueAddAmenities(
-        updatedParams.zipcode,
-        [...updatedParams.buildingAmenities, ...updatedParams.unitAmenities]
+    // If an amenity is selected, we need to update the additionalValueAdds list
+    // to remove it from the list to avoid duplicates
+    if (isSelected) {
+      setAdditionalValueAdds(prevValueAdds => 
+        prevValueAdds.filter(item => item.name !== amenityName)
       );
-      setAdditionalValueAdds(valueAdds);
     }
   };
 
@@ -171,7 +181,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     resetSearch,
     selectedZipcode,
     setSelectedZipcode,
-    toggleAmenity,
+    toggleAdditionalAmenity,
+    selectedAdditionalAmenities,
   };
 
   return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;

@@ -28,7 +28,8 @@
 - Current rent is color-coded based on comparison to estimated range
 - Outliers can be filtered by zipcode
 - Estimated rent is calculated as base rent + sum of amenity value-adds
-- Interactive amenity selection on the result page allows users to toggle amenities and see immediate rent estimate updates
+- Interactive amenity selection on the result page allows users to toggle additional amenities and see immediate rent estimate updates without affecting the original search parameters
+- Amenities already selected in the search parameters are automatically filtered out from the additional amenities list to avoid duplicates
 
 ## Future Enhancements
 - Implement actual scatter chart for outliers visualization
