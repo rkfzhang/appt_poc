@@ -10,7 +10,7 @@
 - No backend, using placeholder data in TypeScript files
 - Data files in `src/data/` directory:
   - `types.ts`: Type definitions for the application
-  - `apartmentData.ts`: Apartment listings data with outlier detection and zipcode utilities
+  - `apartmentData.ts`: Apartment listings data with outlier detection and zipcode utilities (15 apartments across 8 zipcodes in 3 clusters)
   - `amenityUtils.ts`: Amenity-related data and utilities
   - `rentCalculator.ts`: Rent calculation functions
   - `AppContext.tsx`: React Context for state management
@@ -30,6 +30,7 @@
 - Estimated rent is calculated as base rent + sum of amenity value-adds
 - Interactive amenity selection on the result page allows users to toggle additional amenities and see immediate rent estimate updates without affecting the original search parameters
 - Amenities already selected in the search parameters are automatically filtered out from the additional amenities list to avoid duplicates
+- Selected additional amenities remain visible in the table, allowing users to toggle them on and off
 
 ## Future Enhancements
 - Implement actual scatter chart for outliers visualization

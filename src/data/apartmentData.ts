@@ -2,7 +2,7 @@
 import type { Apartment } from './types';
 
 // Available zipcodes
-export const zipcodes = ['10001', '10002', '10003'];
+export const zipcodes = ['10001', '10002', '10003', '20001', '20002', '30001', '30002', '30003'];
 
 // Sample apartment data with specific amenity value-adds
 export const apartments: Apartment[] = [
@@ -153,6 +153,113 @@ export const apartments: Apartment[] = [
       { name: 'Stainless Steel', type: 'unit', valueAdd: 40 },
       { name: 'Private Balcony', type: 'unit', valueAdd: 55 }
     ]
+  },
+  {
+    id: '9',
+    name: 'Capitol Hill Residences',
+    address: '1000 East Capitol St',
+    zipcode: '20001',
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 1050,
+    currentRent: 2900,
+    estimatedBaseRent: 2500,
+    amenities: [
+      { name: 'Doorman', type: 'building', valueAdd: 110 },
+      { name: 'Gym / Fitness Center', type: 'building', valueAdd: 80 },
+      { name: 'Pets Allowed', type: 'building', valueAdd: 45 },
+      { name: 'In-unit Laundry', type: 'unit', valueAdd: 70 },
+      { name: 'Quartz', type: 'unit', valueAdd: 50 }
+    ]
+  },
+  {
+    id: '10',
+    name: 'Georgetown Flats',
+    address: '2500 Q Street',
+    zipcode: '20001',
+    bedrooms: 1,
+    bathrooms: 1,
+    sqft: 700,
+    currentRent: 2200,
+    estimatedBaseRent: 2000,
+    amenities: [
+      { name: 'Swimming Pool', type: 'building', valueAdd: 85 },
+      { name: 'BBQ / Grill', type: 'building', valueAdd: 40 },
+      { name: 'Granite', type: 'unit', valueAdd: 45 },
+      { name: 'Private Balcony', type: 'unit', valueAdd: 60 }
+    ]
+  },
+  {
+    id: '11',
+    name: 'Dupont Circle Suites',
+    address: '1700 Connecticut Ave',
+    zipcode: '20002',
+    bedrooms: 2,
+    bathrooms: 1,
+    sqft: 900,
+    currentRent: 2600,
+    estimatedBaseRent: 2300,
+    amenities: [
+      { name: 'Shared Laundry', type: 'building', valueAdd: 30 },
+      { name: 'EV Parking', type: 'building', valueAdd: 55 },
+      { name: 'Vinyl Flooring', type: 'unit', valueAdd: 25 },
+      { name: 'Stainless Steel', type: 'unit', valueAdd: 40 }
+    ]
+  },
+  {
+    id: '12',
+    name: 'Bayview Towers',
+    address: '500 Harbor Drive',
+    zipcode: '30001',
+    bedrooms: 3,
+    bathrooms: 2,
+    sqft: 1300,
+    currentRent: 3800,
+    estimatedBaseRent: 3200,
+    amenities: [
+      { name: 'Swimming Pool', type: 'building', valueAdd: 100 },
+      { name: 'Doorman', type: 'building', valueAdd: 120 },
+      { name: 'Gym / Fitness Center', type: 'building', valueAdd: 90 },
+      { name: 'BBQ / Grill', type: 'building', valueAdd: 50 },
+      { name: 'In-unit Laundry', type: 'unit', valueAdd: 75 },
+      { name: 'Private Balcony', type: 'unit', valueAdd: 80 },
+      { name: 'Quartz', type: 'unit', valueAdd: 55 }
+    ]
+  },
+  {
+    id: '13',
+    name: 'Harborside Apartments',
+    address: '700 Marina Blvd',
+    zipcode: '30002',
+    bedrooms: 1,
+    bathrooms: 1,
+    sqft: 650,
+    currentRent: 1950,
+    estimatedBaseRent: 1700,
+    amenities: [
+      { name: 'Pets Allowed', type: 'building', valueAdd: 40 },
+      { name: 'Shared Laundry', type: 'building', valueAdd: 25 },
+      { name: 'Vinyl Flooring', type: 'unit', valueAdd: 30 },
+      { name: 'Stainless Steel', type: 'unit', valueAdd: 35 }
+    ]
+  },
+  {
+    id: '14',
+    name: 'Oceanview Residences',
+    address: '1200 Coastal Highway',
+    zipcode: '30003',
+    bedrooms: 2,
+    bathrooms: 2,
+    sqft: 1100,
+    currentRent: 3100,
+    estimatedBaseRent: 2800,
+    amenities: [
+      { name: 'Swimming Pool', type: 'building', valueAdd: 95 },
+      { name: 'Gym / Fitness Center', type: 'building', valueAdd: 85 },
+      { name: 'BBQ / Grill', type: 'building', valueAdd: 45 },
+      { name: 'In-unit Laundry', type: 'unit', valueAdd: 70 },
+      { name: 'Private Balcony', type: 'unit', valueAdd: 75 }
+    ]
   }
 ];
 
@@ -171,7 +278,12 @@ export const getApartmentsByZipcode = (zipcode: string, includeNearby: boolean =
   const nearbyZipcodes: Record<string, string[]> = {
     '10001': ['10002', '10003'],
     '10002': ['10001', '10003'],
-    '10003': ['10001', '10002']
+    '10003': ['10001', '10002'],
+    '20001': ['20002'],
+    '20002': ['20001'],
+    '30001': ['30002', '30003'],
+    '30002': ['30001', '30003'],
+    '30003': ['30001', '30002']
   };
   
   const relevantZipcodes = includeNearby 

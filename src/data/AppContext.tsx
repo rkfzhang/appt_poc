@@ -162,13 +162,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     );
     setRentEstimate(estimate);
     
-    // If an amenity is selected, we need to update the additionalValueAdds list
-    // to remove it from the list to avoid duplicates
-    if (isSelected) {
-      setAdditionalValueAdds(prevValueAdds => 
-        prevValueAdds.filter(item => item.name !== amenityName)
-      );
-    }
+    // Note: We no longer remove the amenity from the additionalValueAdds list
+    // so that it remains visible in the table even after selection
   };
 
   // Context value
